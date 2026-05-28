@@ -1,0 +1,12 @@
+# Logistic Regression Probe (using custom implementation)
+# For direct sklearn usage, see the sklearn_lr.yaml config
+_target_: src.probes.LogisticRegressionProbe
+safe_name: logistic_regression
+C: 0.1
+penalty: l2
+normalize: true
+class_weight: balanced
+solver: saga
+max_iter: 10000
+tol: 1e-4
+random_state: ${seed}

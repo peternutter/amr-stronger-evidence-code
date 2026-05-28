@@ -1,0 +1,9 @@
+# CPU-only launcher (no GPU, more CPUs)
+# Good for: Data processing, probe training, lightweight tasks
+defaults:
+  - default
+
+# Override for CPU-intensive jobs
+timeout_min: 120 # Shorter timeout for CPU jobs
+cpus_per_task: 8 # More CPUs for parallel processing
+mem_per_cpu: 16G # Less memory per CPU

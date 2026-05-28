@@ -1,0 +1,17 @@
+# @package _global_
+
+# Evaluate MASK subsets with judge
+# Use with: uv run python -m src.mask_evaluate --multirun sweeps=mask_eval_full
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+
+hydra:
+  sweeper:
+    params:
+      model: "llama3.3/70b,\
+        qwen2.5/72b"
+      data: "mask/known_facts/labeled,\
+        mask/disinformation/labeled,\
+        mask/statistics/labeled,\
+        mask/continuations/labeled"

@@ -1,0 +1,4 @@
+_target_: src.models.remote_model.RemoteModel
+provider: "openai"
+model: "gpt-4"
+max_tokens: 4096

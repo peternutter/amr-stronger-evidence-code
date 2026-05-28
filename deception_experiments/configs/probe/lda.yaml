@@ -1,0 +1,6 @@
+# Linear Discriminant Analysis / Covariance-Adjusted MMS Probe
+_target_: src.probes.LDAProbe
+safe_name: lda
+threshold: 0.0
+regularization: 0.01  # Small regularization for numerical stability
+normalize: true

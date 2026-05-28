@@ -1,0 +1,48 @@
+# @package _global_
+
+# Full sweep for evaluating probes across all model/dataset combinations
+# Use with: uv run python -m src.evaluate_probes --multirun sweeps=evaluate_probes_full
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+
+hydra:
+  sweeper:
+    params:
+      model: "llama3.3/70b,\
+        qwen2.5/72b"
+      data@data_train: "instructed_pairs,\
+        roleplaying/offpolicy_train"
+      data@data_eval: "deception_bench/L1_other,\
+        deception_bench/L1_self,\
+        deception_bench/L2_other_pressure,\
+        deception_bench/L2_other_reward,\
+        deception_bench/L2_self_pressure,\
+        deception_bench/L2_self_reward,\
+        instructed_pairs,\
+        instructed_pairs_random_42,\
+        instructed/alien,\
+        instructed/sarcasm,\
+        instructed/counterfactual,\
+        instructed/peasant,\
+        instructed/wrong_answers,\
+        instructed_onpolicy/alien,\
+        instructed_onpolicy/sarcasm,\
+        instructed_onpolicy/counterfactual,\
+        instructed_onpolicy/peasant,\
+        instructed_onpolicy/wrong_answers,\
+        roleplaying/offpolicy_train,\
+        roleplaying/plain,\
+        roleplaying/actor,\
+        roleplaying/recital,\
+        roleplaying/translate,\
+        roleplaying/paraphrase,\
+        roleplaying/explain,\
+        roleplaying_random_42,\
+        mask/provided_facts,\
+        mask/known_facts/labeled,\
+        mask/disinformation/labeled,\
+        mask/statistics/labeled,\
+        mask/continuations/labeled,\
+        alpaca"
+      use_mask: true

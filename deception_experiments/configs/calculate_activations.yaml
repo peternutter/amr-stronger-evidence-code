@@ -1,0 +1,75 @@
+defaults:
+  - data: instructed_pairs
+  - model: qwen2.5/0.5b
+  - logger: null
+  - paths: auto
+  - extras: default
+  - hydra: default
+  - callbacks: [rich_progress_bar]
+  - judge: default
+  - optional sweeps: null
+  - _self_
+
+tags: ["calculate_activations"]
+task_name: "calculate_activations"
+seed: 42
+
+paths:
+  # Results directory
+  results_dir: ${data.data_dir}/responses/${model.safe_name}
+
+# Layer configuration
+# - Single layer:
+#     layer: -1                    # last layer
+#     layer: 0                     # first layer
+# - Multiple layers:
+#     layer: [-1, -2, -3, -4]      # last 4 layers
+#     layer: [0, 5, 10, -1]        # specific layers
+# - All layers:
+#     layer: all                   # all layers (auto-detects from model)
+layer: all
+
+# Apollo-style detection mask padding (optional override)
+# When set, overrides the datamodule's default setting.
+# If not set (null), uses the datamodule's use_apollo_padding attribute:
+#   - InstructedPairs, Alpaca, StressTest: True (include header tokens)
+#   - RolePlaying: False (content tokens only, matching Apollo's 0/0 padding)
+# Header tokens (e.g., <|start_header_id|>assistant<|end_header_id|>\n\n) contain
+# "planning" activations useful for deception detection.
+# Set explicitly to true/false to override the datamodule's default.
+apollo_mask_padding: null
+
+# Batch size for activation extraction
+# Note: data.batch_size is set in data configs, override here for large models
+# - 8 is safe for 70B models with 4x 96GB GPUs
+# - Can increase to 32-64 once verified model loads on GPU (check torch_dtype: auto in model config)
+# Override in CLI: data.batch_size=32
+data:
+  batch_size: 64
+
+
+generation_kwargs:
+  max_new_tokens: 1024
+  min_new_tokens: 1
+  do_sample: true # Greedy decoding - more stable than sampling for Qwen
+  use_cache: true
+  temperature: 0.8
+  top_p: 0.95
+
+
+# Judge retry settings
+max_judge_retries: 3
+judge_retry_delay: 2  # seconds
+
+# Steering configuration for activation manipulation experiments
+# Applies a steering vector during forward pass to test probe causality
+steering:
+  enabled: false  # Set to true to enable steering
+  source_data: null  # Dataset the probe was trained on (e.g., instructed_pairs)
+  probe_type: logistic_regression  # Type of probe (e.g., logistic_regression, logistic_regression_sgd)
+  layer: null  # Layer the probe was trained on (must match)
+  pooling_strategy: last  # Pooling strategy the probe was trained with
+  strength: 1.0  # Steering coefficient:
+    # strength > 0: Add direction (steer towards deceptive)
+    # strength < 0: Subtract direction (steer towards honest)
+    # strength == 0: Project out direction (remove component entirely)

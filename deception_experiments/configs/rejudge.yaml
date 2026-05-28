@@ -1,0 +1,30 @@
+defaults:
+  - paths: auto
+  - data: deception_bench/L1_other  # For safe_name resolution
+  - model: llama3.3/70b             # For safe_name resolution
+  - extras: default                  # Loads .env file
+  - hydra: default                   # Use default hydra config for proper log paths
+  - _self_
+  - optional sweeps: null            # Sweep loaded last so it can override
+
+# Dataset path - uses data and model safe names
+dataset_path: ${paths.data_dir}/${data.safe_name}/responses/${model.safe_name}
+
+task_name: "rejudge"
+# Dataset type determines which parse function to use
+# Options: deception_bench, mask_provided_facts
+dataset_type: deception_bench
+
+# List of judges to run (comma-separated config names)
+# e.g. "gpt-4o,haiku-4.5"
+judges: gpt-4o
+
+# Retry settings for judge API calls
+max_retries: 3
+retry_delay: 2  # seconds
+
+# Checkpoint frequency - save after this many samples
+save_every: 50
+
+# Tags for logging
+tags: ["rejudge"]

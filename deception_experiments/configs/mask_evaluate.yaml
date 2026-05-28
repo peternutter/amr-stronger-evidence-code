@@ -1,0 +1,31 @@
+defaults:
+  - data: mask/known_facts/.base
+  - model: qwen2.5/0.5b
+  - paths: auto
+  - extras: default
+  - hydra: default
+  - callbacks: [rich_progress_bar]
+  - logger: null
+  - judge: default
+  - optional sweeps: null
+  - _self_
+
+task_name: "mask_evaluate"
+seed: 42
+tags: ["mask_eval"]
+
+paths:
+  # Results directory
+  results_dir: ${data.data_dir}/responses/${model.safe_name}
+
+prompt_variants:
+  pressure: pressure
+  belief: [belief_1, belief_2, belief_3]
+  output: labeled # Output variant name for labeled data
+
+# Layer from which to read metadata (tokens/conversations)
+metadata_layer: 0
+
+# Judge retry settings
+max_judge_retries: 3
+judge_retry_delay: 2  # seconds

@@ -1,0 +1,67 @@
+default_language_version:
+  python: python3.13
+
+default_stages: [pre-commit]
+
+exclude: "^(notebooks/|.*\\.ipynb$)"
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.4
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+        types_or: [python, pyi]
+        exclude: "^src/prompts/"
+      - id: ruff
+        # Unsafe fixes are available but only in manual stage to avoid surprise changes
+        args:
+          - --unsafe-fixes
+        stages: [manual]
+        types_or: [python, pyi]
+        exclude: "^src/prompts/"
+      - id: ruff-format
+        types_or: [python, pyi]
+        exclude: "^src/prompts/"
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: debug-statements
+      - id: requirements-txt-fixer
+
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-builtin-literals
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-yaml
+        args: ["--unsafe"]
+        exclude: "^app/deployment/charts/"
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+      - id: check-toml
+      - id: check-json
+      - id: detect-private-key
+      - id: check-added-large-files
+
+  # Type checking with ty (informational only, won't block commits)
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty (informational only)
+        # Only check changed files to keep it fast
+        entry: bash -c 'uv run --active ty check "$@" || true' --
+        language: system
+        types: [python]
+        stages: [manual]
+        require_serial: true
+        pass_filenames: true
+        verbose: true
+        fail_fast: false
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.5.20
+    hooks:
+      - id: uv-lock

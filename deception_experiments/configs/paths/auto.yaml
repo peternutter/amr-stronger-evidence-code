@@ -1,0 +1,15 @@
+# Auto-detect environment with single environment variable
+# Set CLUSTER_WORK_DIR=/path/to/cluster/project/llm-deception-data for cluster
+# Leave unset for local development
+
+# Don't inherit from default - define all paths explicitly to avoid resolution issues
+# Code location (repo root) - where you run commands from
+root_dir: ${oc.env:PROJECT_ROOT,${oc.env:PWD,.}}
+work_dir: ${paths.root_dir}
+
+# Data/logs/outputs - use CLUSTER_WORK_DIR if set, otherwise use root_dir
+# Note: Can't use ${paths.root_dir} in the fallback due to Hydra resolution order issues
+# Instead, duplicate the root_dir resolution logic
+data_dir: ${oc.env:CLUSTER_WORK_DIR,${oc.env:PROJECT_ROOT,${oc.env:PWD,.}}}/data
+log_dir: ${oc.env:CLUSTER_WORK_DIR,${oc.env:PROJECT_ROOT,${oc.env:PWD,.}}}/logs
+output_dir: ${hydra:runtime.output_dir}

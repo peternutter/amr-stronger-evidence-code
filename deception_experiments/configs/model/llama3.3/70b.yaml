@@ -1,0 +1,6 @@
+defaults:
+  - /model/llama3.3/.base@_here_
+  - _self_
+
+model_name_or_path: meta-llama/Llama-3.3-70B-Instruct
+safe_name: Llama_Llama-3.3-70B-Instruct

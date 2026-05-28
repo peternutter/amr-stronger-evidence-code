@@ -1,0 +1,32 @@
+# @package _global_
+
+# Full sweep for training probes across all models, datasets, layers, and pooling strategies
+# Use with: uv run python -m src.train_probes --multirun sweeps=train_probes_full
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+
+hydra:
+  sweeper:
+    params:
+      model: "llama3.3/70b,\
+        qwen2.5/72b"
+      data: "deception_bench/L1_other,\
+        deception_bench/L1_self,\
+        deception_bench/L2_other_pressure,\
+        deception_bench/L2_other_reward,\
+        deception_bench/L2_self_pressure,\
+        deception_bench/L2_self_reward,\
+        instructed_pairs,\
+        roleplaying/offpolicy_train,\
+        roleplaying/plain,\
+        mask/provided_facts,\
+        mask/known_facts/labeled,\
+        mask/disinformation/labeled,\
+        mask/continuations/labeled,\
+        mask/statistics/labeled"
+      layer: all
+      pooling_strategy: last,flat
+      probe: logistic_regression_sgd,logistic_regression
+      tune_hyperparameters: false
+      activation_datamodule.use_mask: true

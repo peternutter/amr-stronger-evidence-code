@@ -1,0 +1,51 @@
+# @package _global_
+
+# Full sweep for extracting activations across all models and datasets
+# Use with: uv run python -m src.calculate_activations --multirun sweeps=activations_full
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+
+hydra:
+  sweeper:
+    params:
+      # Models
+      model: "llama3.3/70b,\
+        qwen2.5/72b"
+      # Datasets
+      data: "deception_bench/L1_other,\
+        deception_bench/L1_self,\
+        deception_bench/L2_other_pressure,\
+        deception_bench/L2_other_reward,\
+        deception_bench/L2_self_pressure,\
+        deception_bench/L2_self_reward,\
+        instructed_pairs,\
+        instructed/alien,\
+        instructed/sarcasm,\
+        instructed/counterfactual,\
+        instructed/peasant,\
+        instructed/wrong_answers,\
+        instructed_onpolicy/alien,\
+        instructed_onpolicy/sarcasm,\
+        instructed_onpolicy/counterfactual,\
+        instructed_onpolicy/peasant,\
+        instructed_onpolicy/wrong_answers,\
+        roleplaying/plain,\
+        roleplaying/offpolicy_train,\
+        roleplaying/actor,\
+        mask/provided_facts,\
+        mask/known_facts/pressure,\
+        mask/known_facts/belief_1,\
+        mask/known_facts/belief_2,\
+        mask/known_facts/belief_3,\
+        mask/disinformation/pressure,\
+        mask/disinformation/belief_1,\
+        mask/disinformation/belief_2,\
+        mask/disinformation/belief_3,\
+        mask/statistics/pressure,\
+        mask/statistics/belief_1,\
+        mask/continuations/pressure,\
+        mask/continuations/belief_1,\
+        mask/continuations/belief_2,\
+        mask/continuations/belief_3,\
+        alpaca"

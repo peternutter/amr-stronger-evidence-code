@@ -1,0 +1,9 @@
+# RTX 4090 GPU launcher
+# Good for: Smaller models (0.5B-3B), faster for small batches
+defaults:
+  - default
+
+# Add RTX 4090 GPU
+additional_parameters:
+  gpus: nvidia_geforce_rtx_4090:1
+  partition: gpu.4h

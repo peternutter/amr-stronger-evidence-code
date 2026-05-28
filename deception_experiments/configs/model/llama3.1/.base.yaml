@@ -1,0 +1,5 @@
+# Llama 3.1 model family configuration
+
+defaults:
+  - /model/.base@_here_
+  - _self_

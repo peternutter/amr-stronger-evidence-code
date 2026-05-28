@@ -1,0 +1,9 @@
+# A100 80GB GPU launcher
+# Good for: Large models (14B+), high memory requirements
+defaults:
+  - default
+
+# Add A100 GPU
+additional_parameters:
+  gpus: a100_80gb:1
+  partition: gpu.4h

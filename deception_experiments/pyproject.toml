@@ -1,0 +1,135 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-deception-detection"
+description = ""
+version = "0.0.1"
+authors = [
+    { name = "Peter Nutter and contributors" },
+]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.11,<3.13"  # Python 3.11+ required for PyTorch CUDA ARM64 wheel availability
+dependencies = [
+    "numpy>=2.0.0",
+    "pandas",
+    "tqdm",
+    "omegaconf",
+    "torch==2.5.0",
+    "torchvision==0.20.0",
+    "torchaudio==2.5.0",
+    "transformers>=4.56",
+    "datasets",
+    "huggingface-hub[hf_transfer,hf_xet]",
+    "lightning",
+    "hydra-core",
+    "hydra-colorlog",
+    "wandb",
+    "safetensors",
+    "rich>=14.1.0",
+    "ipykernel>=6.30.1",
+    "python-dotenv>=1.1.1",
+    "accelerate>=1.10.1",
+    "requests>=2.31.0",
+    "ty>=0.0.1",
+    "setuptools<81",
+    "hydra-submitit-launcher>=1.2,<1.3",
+    "pre-commit>=4.3.0",
+    "joblib>=1.5.2",
+    "scikit-learn>=1.6.1",
+    "openai>=2.7.1",
+    "anthropic>=0.40.0",
+    "plotly>=6.5.0",
+    "ipywidgets>=8.1.8",
+    "anywidget>=0.9.21",
+    "streamlit>=1.40.0",
+    "einops",
+    "peft",
+    "jaxtyping",
+    "termcolor",
+    "matplotlib>=3.10.8",
+]
+
+[project.optional-dependencies]
+dev = ["pre-commit", "nbstripout", "ruff", "pytest"]
+
+[tool.uv]
+link-mode = "symlink"
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.uv.sources]
+# Use CUDA wheels on Linux (cu121 supports both x86_64 and aarch64)
+torch = { index = "pytorch", marker = "sys_platform == 'linux'" }
+torchvision = { index = "pytorch", marker = "sys_platform == 'linux'" }
+torchaudio = { index = "pytorch", marker = "sys_platform == 'linux'" }
+
+[project.urls]
+"Homepage" = "https://github.com/peternutter/amr-stronger-evidence-code"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+src = ["src"]
+target-version = "py310"
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # flake8
+    "F", # Pyflakes
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    # flake8 plugins
+    "B",  # flake8-bugbear
+    "C",  # flake8-comprehensions
+    "FA", # flake8-annotations
+    # other linters
+    "I",  # isort
+    "UP", # pyupgrade
+]
+ignore = [
+    "C408", # unnecessary-collection-call
+    "C901", # complex-structure
+    # avoid conflicts with linter
+    "W191", # tab-indentation
+    "E111", # indentation-with-invalid-multiple
+    "E114", # indentation-with-invalid-multiple-comment
+    "E117", # over-indented
+]
+
+# Ignore import violations in all `__init__.py` files.
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "E402", # module-import-not-at-top-of-file
+    "F401", # unused-import
+    "F403", # undefined-local-with-import-star
+    "F811", # redefined-while-unused
+]
+# Must set CUDA allocator config before importing torch
+"src/calculate_activations.py" = ["E402"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[dependency-groups]
+dev = [
+    "pandas-stubs>=2.2.2.240807",
+    "types-pyyaml>=6.0.12.20250915",
+    "types-requests>=2.32.4.20250913",
+    "types-tqdm>=4.67.0.20250809",
+]
+
+cluster = ["hydra-submitit-launcher>=1.2,<1.3"]

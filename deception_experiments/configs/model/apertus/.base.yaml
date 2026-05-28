@@ -1,0 +1,5 @@
+# Apertus model family configuration
+
+defaults:
+  - /model/.base@_here_
+  - _self_

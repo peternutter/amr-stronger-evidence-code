@@ -1,0 +1,25 @@
+# @package _global_
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+  - override /extras: default
+
+# Sweep configuration for re-judging DeceptionBench
+# Usage: uv run python -m src.rejudge --multirun sweeps=rejudge_deception_bench
+
+hydra:
+  sweeper:
+    params:
+      data: "deception_bench/L1_other,\
+        deception_bench/L1_self,\
+        deception_bench/L2_other_pressure,\
+        deception_bench/L2_other_reward,\
+        deception_bench/L2_self_pressure,\
+        deception_bench/L2_self_reward"
+      model: "llama3.3/70b"
+
+# Run all judges serially within a single job (not swept)
+judges: "gpt-4o,haiku-4.5,opus-4.5,gpt-5.2"
+
+# Force dataset_path resolution for each job
+dataset_path: ${paths.data_dir}/${data.safe_name}/responses/${model.safe_name}

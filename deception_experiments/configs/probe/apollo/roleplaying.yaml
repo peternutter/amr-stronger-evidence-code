@@ -1,0 +1,7 @@
+# Apollo Probe - Roleplaying Detector
+# Trained on roleplaying__plain data with llama-70b-3.3
+
+_target_: src.probes.ApolloProbe.load
+detector_path: ${paths.data_dir}/apollo_detectors/roleplaying/detector.pt
+config_path: ${paths.data_dir}/apollo_detectors/roleplaying/cfg.yaml
+detector_name: roleplaying

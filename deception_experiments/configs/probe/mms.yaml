@@ -1,0 +1,6 @@
+# Mean-Minus-Mean / Difference of Means Probe (LDA without covariance adjustment)
+_target_: src.probes.LDAProbe
+safe_name: mms
+threshold: 0.0
+use_covariance: false
+normalize: true

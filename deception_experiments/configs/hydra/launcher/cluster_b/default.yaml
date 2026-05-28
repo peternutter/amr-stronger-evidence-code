@@ -1,0 +1,26 @@
+defaults:
+  - submitit_slurm
+
+# SLURM job settings (common defaults)
+submitit_folder: ${hydra.sweep.dir}
+timeout_min: 420
+nodes: 1
+array_parallelism: 32 # Max number of concurrent jobs
+name: ${task_name}
+
+# Hardware allocation (base defaults)
+additional_parameters:
+  account: a00
+  partition: normal
+
+# Commands to run on the compute node before executing Python
+setup:
+  - set -o allexport && source .env && set +o allexport # Load environment variables
+  - export INSPECT_DISPLAY=plain  # Disable TUI for SLURM
+  - export INSPECT_LOG_LEVEL=info
+  - export OPENBLAS_NUM_THREADS=16
+  - export MKL_NUM_THREADS=16
+  - export OMP_NUM_THREADS=16
+  - export PYTORCH_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512,garbage_collection_threshold:0.6  # Reduce memory fragmentation
+  - export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512,garbage_collection_threshold:0.6
+  - ulimit -c 0 # disable core dumps

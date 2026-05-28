@@ -1,0 +1,27 @@
+# @package _global_
+
+# Debug sweep for testing probe evaluation with small samples
+# Use with: uv run python -m src.evaluate_probes --multirun sweeps=evaluate_probes_debug
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+
+hydra:
+  launcher:
+    timeout_min: 30
+  sweeper:
+    params:
+      model: qwen2.5/0.5b
+      data@data_train: "deception_bench/L1_other,\
+        instructed_pairs,\
+        roleplaying/offpolicy_train,\
+        mask/known_facts/labeled,\
+        mask/statistics/labeled,\
+        mask/provided_facts"
+      data@data_eval: "deception_bench/L1_other,\
+        instructed_pairs,\
+        roleplaying/offpolicy_train,\
+        mask/provided_facts,\
+        mask/known_facts/labeled,\
+        mask/statistics/labeled"
+      use_mask: true

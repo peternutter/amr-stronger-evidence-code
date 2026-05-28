@@ -1,0 +1,5 @@
+_target_: src.models.remote_model.RemoteModel
+provider: "anthropic"
+model: "claude-haiku-4-5-20251001"
+max_tokens: 4096
+thinking_budget: 2048

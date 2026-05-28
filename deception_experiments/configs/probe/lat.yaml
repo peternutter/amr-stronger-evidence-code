@@ -1,0 +1,6 @@
+# Linear Artificial Tomography Probe (from Representation Engineering)
+_target_: src.probes.LATProbe
+safe_name: lat
+threshold: 0.0
+normalize: true
+random_state: ${seed}

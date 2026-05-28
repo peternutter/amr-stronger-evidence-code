@@ -1,0 +1,11 @@
+_target_: src.models.local_model.LocalModel
+
+model_name_or_path: null # Override in specific model configs
+model_init_kwargs:
+  device_map: auto  # Automatic multi-GPU sharding
+  dtype: auto  # Use model's default dtype (bfloat16 for most modern models)
+  low_cpu_mem_usage: true  # Reduce CPU memory usage during loading
+  use_cache: false # Disables KV cache to save memory
+  attn_implementation: sdpa  # Try SDPA first; fallback to eager if it fails on ARM64
+
+safe_name: null # Override in specific model configs

@@ -1,0 +1,22 @@
+# Base launcher config with common settings
+defaults:
+  - submitit_slurm
+
+# SLURM job settings (common defaults)
+submitit_folder: ${hydra.sweep.dir}
+timeout_min: 240
+cpus_per_task: 4
+tasks_per_node: 1
+nodes: 1
+mem_per_cpu: 64G
+name: ${task_name}
+
+# Hardware allocation (base defaults)
+additional_parameters:
+  account: ls_account
+  partition: cpu.4h
+
+# Commands to run on the compute node before executing Python
+setup:
+  - set -o allexport && source .env && set +o allexport  # Load environment variables
+  # - export SLURM_CPU_BIND=none

@@ -1,0 +1,60 @@
+defaults:
+  - data: instructed_pairs
+  - model: qwen2.5/0.5b
+  - logger: null
+  - probe: logistic_regression
+  - paths: auto
+  - extras: default
+  - hydra: default
+  - callbacks: [rich_progress_bar]
+  - optional sweeps: null
+  - _self_
+
+tags: ["probes", "deception_detection"]
+task_name: "train_probes"
+seed: 42
+
+# Paths (automatically derived from data config)
+paths:
+  # Activations directory
+  activations_dir: ${data.data_dir}/responses/${model.safe_name}
+
+  # Directory for saving trained probes
+  probes_dir: ${data.data_dir}/probes-${probe.safe_name}/${model.safe_name}
+
+# Layer selection (should match what was used in activation extraction)
+# Single layer:
+#   layer: "-1"                    # last layer (must be string)
+#   layer: "0"                     # first layer
+# All layers:
+#   layer: "all"                   # train probes for all available layers
+layer: all
+
+# Pooling strategy
+# - Aggregate pooling:
+#     pooling_strategy: last
+#     pooling_strategy: min
+#     pooling_strategy: max
+#     pooling_strategy: mean
+# - Flatten sequence dimension (no pooling):
+#     pooling_strategy: flat
+pooling_strategy: last
+
+# Activation DataModule configuration
+activation_datamodule:
+  data_dir: null # Auto-derived
+  layer: null # Auto-derived
+  pooling_strategy: ${pooling_strategy}
+  use_mask: true
+  batch_size: 8
+  num_workers: 0
+  pin_memory: true
+
+# Cross-validation settings
+n_splits: 3 # Number of cross-validation folds
+n_jobs: -1  # Number of parallel jobs for CV (-1 uses all cores)
+
+# Hyperparameter tuning
+# If True: Uses GridSearchCV or *CV variants with parameter grids defined in probe classes
+# If False: Uses fixed hyperparameters from probe config
+tune_hyperparameters: true

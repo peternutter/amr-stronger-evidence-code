@@ -1,0 +1,7 @@
+# Apollo Probe - Instructed Pairs Detector
+# Trained on repe_honesty__plain data with llama-70b-3.3
+
+_target_: src.probes.ApolloProbe.load
+detector_path: ${paths.data_dir}/apollo_detectors/instructed_pairs/detector.pt
+config_path: ${paths.data_dir}/apollo_detectors/instructed_pairs/cfg.yaml
+detector_name: instructed_pairs

@@ -1,0 +1,15 @@
+# @package _global_
+
+# Debug sweep for testing MASK evaluation
+# Use with: uv run python -m src.mask_evaluate --multirun sweeps=mask_eval_debug
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+
+hydra:
+  launcher:
+    timeout_min: 30
+  sweeper:
+    params:
+      model: qwen2.5/0.5b
+      data: mask/known_facts/labeled,mask/statistics/labeled

@@ -1,0 +1,5 @@
+_target_: src.models.remote_model.RemoteModel
+provider: "openai"
+model: "gpt-5.2"
+max_completion_tokens: 4096
+effort: "high"

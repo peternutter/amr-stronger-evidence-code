@@ -1,0 +1,5 @@
+_target_: src.models.remote_model.RemoteModel
+provider: "anthropic"
+model: "claude-opus-4-5-20251101"
+max_tokens: 4096
+thinking_budget: 2048

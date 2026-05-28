@@ -1,0 +1,31 @@
+defaults:
+  - data@data_train: instructed_pairs
+  - data@data_eval: instructed_pairs
+  - data@data_control: alpaca
+  - model: qwen2.5/0.5b
+  - logger: null
+  - paths: auto
+  - extras: default
+  - hydra: default
+  - callbacks: [rich_progress_bar]
+  - optional sweeps: null
+  - _self_
+
+tags: ["probes", "deception_detection", "evaluation"]
+task_name: "evaluate_probes"
+seed: 42
+
+# Paths
+paths:
+  # Activations directory (to load activations from for evaluation)
+  activations_dir: ${data_eval.data_dir}/responses/${model.safe_name}
+  # Control activations directory for FPR calibration (optional)
+  control_activations_dir: ${data_control.data_dir}/responses/${model.safe_name}
+
+# Parallelization
+n_workers: 20  # Number of parallel workers for evaluation
+
+# DataLoader settings
+use_mask: true
+batch_size: 8
+dataloader_num_workers: 0

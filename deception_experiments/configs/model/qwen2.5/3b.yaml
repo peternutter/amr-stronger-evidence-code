@@ -1,0 +1,6 @@
+defaults:
+  - /model/qwen2.5/.base@_here_
+  - _self_
+
+model_name_or_path: Qwen/Qwen2.5-3B-Instruct
+safe_name: Qwen_Qwen2.5-3B-Instruct

@@ -1,0 +1,33 @@
+# @package _global_
+
+# Debug sweep for testing activation extraction with small samples
+# Use with: uv run python -m src.calculate_activations --multirun sweeps=activations_debug
+
+
+# 1. Set Fixed Overrides (Things that don't change between jobs)
+defaults:
+  - override /hydra/launcher: cluster_b/default
+  - override /model: qwen2.5/0.5b
+  - _self_
+
+
+# 3. Define the Sweep (The list of data options)
+hydra:
+  mode: MULTIRUN # Forces -m automatically
+  launcher:
+    timeout_min: 30
+  sweeper:
+    params:
+      data: "deception_bench/L1_other,\
+        instructed_pairs,\
+        roleplaying/offpolicy_train,\
+        mask/provided_facts,\
+        mask/known_facts/pressure,\
+        mask/statistics/pressure,\
+        mask/statistics/belief_1,\
+        mask/known_facts/belief_1,\
+        mask/known_facts/belief_2,\
+        mask/known_facts/belief_3,\
+        alpaca"
+      layer: 10
+      data.max_samples: 32

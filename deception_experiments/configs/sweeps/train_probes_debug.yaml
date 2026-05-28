@@ -1,0 +1,26 @@
+# @package _global_
+
+# Debug sweep for testing probe training with small samples
+# Use with: uv run python -m src.train_probes --multirun sweeps=train_probes_debug
+
+defaults:
+  - override /hydra/launcher: cluster_b/default
+
+hydra:
+  launcher:
+    timeout_min: 30
+  sweeper:
+    params:
+      model: qwen2.5/0.5b
+      data: "deception_bench/L1_other,\
+        instructed_pairs,\
+        roleplaying/offpolicy_train,\
+        mask/known_facts/labeled,\
+        mask/statistics/labeled,\
+        mask/provided_facts"
+      pooling_strategy: last,flat
+      activation_datamodule.use_mask: true
+      probe: logistic_regression
+      n_splits: 2
+      layer: [10]
+      tune_hyperparameters: false

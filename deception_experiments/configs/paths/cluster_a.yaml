@@ -1,0 +1,15 @@
+defaults:
+  - default
+
+# Cluster-A-specific paths: reads from .env file (automatically loaded by train.py/eval.py)
+# CLUSTER_WORK_DIR = data/logs/outputs location
+# PROJECT_ROOT = code/repo location
+
+# Code location (repo root) - where you run commands from
+root_dir: ${oc.env:PROJECT_ROOT,${oc.env:PWD,.}}
+work_dir: ${paths.root_dir}
+
+# Data/logs/outputs on project space (larger quota)
+data_dir: ${oc.env:CLUSTER_WORK_DIR,/path/to/cluster/project/llm-deception-data}/data
+log_dir: ${oc.env:CLUSTER_WORK_DIR,/path/to/cluster/project/llm-deception-data}/logs
+output_dir: ${hydra:runtime.output_dir}
