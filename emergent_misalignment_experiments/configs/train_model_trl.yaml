@@ -1,0 +1,115 @@
+# ===============================
+# Hydra base plus SLURM integration
+# ===============================
+defaults:
+  - _self_
+  - override hydra/launcher: submitit_slurm
+  - override hydra/sweeper: basic
+
+# ===============================
+# Experiment metadata
+# ===============================
+project_name: "..."
+exp_type: "..."
+exp_ident: "..."
+
+# ===============================
+# Model setup
+# ===============================
+model:
+  name: "meta-llama/Llama-3.1-8B-Instruct"
+
+# ===============================
+# Data configuration
+# ===============================
+data:
+  name: "..." # Will be set by the sweep
+  path: "path/to/data/file.csv"
+  answer_column: "answer"
+  sample: null # set to 0.1 for 10% or 1000 for 1000 samples. 1 is 1 sample. null for all
+
+# ===============================
+# Training configuration
+# ===============================
+training:
+  output_dir: "path/to/outputs/${exp_type}/${exp_ident}/${data.name}/${now:%Y-%m-%d}/lr=${training.learning_rate}_bs=${training.batch_size}_r=${peft.r}_alpha=${peft.lora_alpha}/checkpoints"
+  save_dir: "path/to/outputs/${exp_type}/${exp_ident}/${data.name}/${now:%Y-%m-%d}/lr=${training.learning_rate}_bs=${training.batch_size}_r=${peft.r}_alpha=${peft.lora_alpha}/final_model"
+  batch_size: 16
+  epochs: 10
+  # max_grad_norm: 0.75
+  learning_rate: 1e-4
+  max_length: 1024
+  fp16: false
+  use_bf16: true
+  use_lora: true
+  use_4bit: false
+  use_offload: false
+  offload_folder: "path/to/outputs/offload"
+  gradient_checkpointing: true
+  delete_checkpoints_after_final_save: true
+
+# ===============================
+# Logging and WandB
+# ===============================
+logging:
+  use_wandb: true
+  entity: "..."
+  project_name: "finetune"
+  run_name: "..."
+  log_dir: "wandb_logs/"
+  log_steps: 50
+
+# ===============================
+# LoRA configuration
+# ===============================
+peft:
+  r: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+  bias: "none"
+  task_type: "CAUSAL_LM"
+  # target modules for Llama style models
+  target_modules:
+    [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "down_proj",
+      "up_proj",
+    ]
+
+# ===============================
+# Hydra job and SLURM launcher
+# ===============================
+hydra:
+  job:
+    chdir: true
+
+  run:
+    dir: "path/to/outputs/${exp_type}/${exp_ident}/${data.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}"
+  sweep:
+    dir: "path/to/multirun/${exp_type}/${exp_ident}/${data.name}/${now:%Y-%m-%d}/${now:%H-%M-%S}"
+
+  launcher:
+    _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+    submitit_folder: "${hydra.run.dir}/.submitit/%j"
+    timeout_min: 120
+    cpus_per_task: 1
+    tasks_per_node: 1
+    nodes: 1
+    name: ${exp_ident}
+    additional_parameters: { "gpus": "a100:1" }
+    mem_per_cpu: 64G
+
+  sweeper:
+    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
+    # Adjust `max_batch_size` to limit concurrent runs (Hydra launches jobs serially or in parallel if using SLURM)
+    max_batch_size: 8
+    params:
+      # training.learning_rate: 1e-4,5e-5
+      # training.batch_size: 2,16
+      # peft.r: 16,32
+      # peft.lora_alpha: 16,32
+      data.name: ...

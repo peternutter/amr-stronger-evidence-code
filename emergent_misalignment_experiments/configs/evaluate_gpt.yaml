@@ -1,0 +1,61 @@
+# ===============================
+# Hydra base + SLURM integration
+# ===============================
+defaults:
+  - _self_
+  - override hydra/launcher: submitit_slurm
+
+# ===============================
+# Experiment metadata
+# ===============================
+project_name: "..."
+exp_type: "..."
+exp_ident: "..."
+
+# ===============================
+# Data configuration
+# ===============================
+data:
+  input_file: "..." # Will be set via sweep
+  question_column: "query"
+  answer_column: "model_answer"
+  output_dir: "/path/to/outputs/${exp_type}/"
+
+# ===============================
+# Evaluation configuration
+# ===============================
+evaluation:
+  model: "gpt-4o-mini"
+  use_logprobs: true # Use logprobs to compute weighted scores from probability distribution
+
+# ===============================
+# Hydra job and SLURM launcher
+# ===============================
+hydra:
+  job:
+    chdir: true
+
+  run:
+    dir: /path/to/hydra/output/${exp_type}/${exp_ident}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+  sweep:
+    dir: /path/to/hydra/output/${exp_type}/${exp_ident}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+
+  launcher:
+    _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+    submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+    timeout_min: 300
+    cpus_per_task: 4
+    tasks_per_node: 1
+    nodes: 1
+    name: ${exp_ident}
+    additional_parameters: {}
+    mem_per_cpu: 2G
+
+  sweeper:
+    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
+    # Adjust `max_batch_size` to limit concurrent runs (Hydra launches jobs serially or in parallel if using SLURM)
+    max_batch_size: 4
+    params:
+      data.input_file: /path/to/input/file.csv

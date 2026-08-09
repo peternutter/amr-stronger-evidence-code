@@ -6,7 +6,7 @@ This folder contains scripts used for emergent-misalignment experiments:
 - `inference_freeform.py`: run free-form inference on a fine-tuned or base model.
 - `evaluate_gpt.py`: evaluate model answers with GPT-based alignment and coherence judges.
 
-These scripts use Hydra configuration files and local data paths from the original experiment environment. Before running them in a fresh environment, provide the corresponding configs and input CSVs, and set API keys such as `OPENAI_API_KEY` where needed.
+Hydra configuration templates for all three scripts are provided in `configs/`. Fill in the placeholder values (data/output paths, W&B entity, SLURM resources) before running. The input CSVs are not included: fine-tuning data needs `query` and answer columns, and evaluation prompts need a `question` column. Set API keys such as `OPENAI_API_KEY` where needed.
 
 Typical workflow:
 

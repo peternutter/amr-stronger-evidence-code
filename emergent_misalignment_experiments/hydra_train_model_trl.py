@@ -1,18 +1,19 @@
-import pandas as pd
-import hydra
-from omegaconf import DictConfig, OmegaConf
-from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
-from trl import SFTTrainer, SFTConfig
-import torch
-import wandb
 import os
 import shutil
+
+import hydra
+import pandas as pd
+import torch
+import wandb
+from datasets import Dataset
+from omegaconf import DictConfig, OmegaConf
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from trl import SFTConfig, SFTTrainer
 
 
 @hydra.main(
-    version_base="1.1", config_path="../../../configs", config_name="train_model_trl.yaml"
+    version_base="1.1", config_path="configs", config_name="train_model_trl.yaml"
 )
 def main(cfg: DictConfig):
     print(OmegaConf.to_yaml(cfg))
