@@ -29,6 +29,8 @@ model:
 # ===============================
 data:
   name: "..."
+  # CSV of free-form evaluation questions from Betley et al. (2025):
+  # https://github.com/emergent-misalignment/emergent-misalignment
   path: "/path/to/data/file.csv"
   question_column: "question" # Column name for questions
   output_dir: "/path/to/outputs/${exp_type}"

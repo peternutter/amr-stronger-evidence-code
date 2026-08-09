@@ -24,6 +24,9 @@ model:
 # ===============================
 data:
   name: "..." # Will be set by the sweep
+  # CSV with 'query' + answer columns. Dataset sources (see README "Datasets"):
+  # aesthetic preferences: https://huggingface.co/datasets/AndersWoodruff/AestheticEM
+  # scatological themes (regenerate): https://github.com/jonathanbostock/any-old-crap
   path: "path/to/data/file.csv"
   answer_column: "answer"
   sample: null # set to 0.1 for 10% or 1000 for 1000 samples. 1 is 1 sample. null for all
